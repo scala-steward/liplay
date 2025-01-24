@@ -34,11 +34,6 @@ trait RequestHeader {
     new RequestHeaderImpl(newConnection, method, target, version, headers, attrs)
 
   /**
-   * The request id. The request id is stored as an attribute indexed by [[play.api.mvc.request.RequestAttrKey.Id]].
-   */
-  final def id: Long = attrs(RequestAttrKey.Id)
-
-  /**
    * The HTTP method.
    */
   def method: String

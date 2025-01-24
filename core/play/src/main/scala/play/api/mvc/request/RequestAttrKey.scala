@@ -15,11 +15,6 @@ import play.api.mvc.Session
 object RequestAttrKey {
 
   /**
-   * The key for the request attribute storing a request id.
-   */
-  val Id = TypedKey[Long]("Id")
-
-  /**
    * The key for the request attribute storing a [[Cell]] with
    * [[play.api.mvc.Cookies]] in it.
    */

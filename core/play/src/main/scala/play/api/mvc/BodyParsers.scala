@@ -507,7 +507,7 @@ trait PlayBodyParsers extends BodyParserUtils {
         } catch {
           case e: CharacterCodingException =>
             logger.warn(
-              s"TolerantText body parser tried to parse request ${request.id} as text body with charset $encodingToTry, but it contains invalid characters!"
+              s"TolerantText body parser tried to parse request as text body with charset $encodingToTry, but it contains invalid characters!"
             )
             Failure(e)
           case e: Exception =>
@@ -567,7 +567,7 @@ trait PlayBodyParsers extends BodyParserUtils {
               // Log a warning, and render to the given charset with unmappable characters.
               // This is slower (exception + 2 * rendering) but the happy path is just as fast.
               logger.warn(
-                s"Text body parser tried to parse request ${request.id} as text body with charset $charset, but it contains invalid characters!"
+                s"Text body parser tried to parse request as text body with charset $charset, but it contains invalid characters!"
               )
               bytes.decodeString(charset)
           }
