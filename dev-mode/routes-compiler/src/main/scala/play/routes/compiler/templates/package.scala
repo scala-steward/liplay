@@ -341,10 +341,10 @@ package object templates {
     val callQueryString = if (queryParams.isEmpty) {
       ""
     } else {
-      """ + queryString(List(%s))""".format(
+      """ + play.core.routing.queryString(List(%s))""".format(
         queryParams
           .map { p =>
-            ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
+            ("""implicitly[play.api.mvc.QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
               p.name
             ) + """", """ + safeKeyword(localNames.getOrElse(p.name, p.name)) + """)""") -> p
           }
