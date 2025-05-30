@@ -109,7 +109,6 @@ lazy val PlayFramework = Project("Play-Framework", file("."))
     (concurrentRestrictions in Global) += Tags.limit(Tags.Test, 1),
     libraryDependencies ++= runtime(scalaVersion.value),
     mimaReportBinaryIssues := (()),
-    commands += Commands.quickPublish,
     publish / skip := true,
   )
   .aggregate((userProjects ++ nonUserProjects): _*)
