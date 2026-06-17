@@ -8,8 +8,6 @@ import scala.collection.JavaConverters._
 
 import sbt._
 import sbt.Keys._
-import sbt.Path._
-import sbt.internal.inc.Analysis
 
 import play.core.PlayVersion
 import play.sbt.PlayImport.PlayKeys._
@@ -45,7 +43,6 @@ object PlaySettings {
     // all dependencies from outside the project (all dependency jars)
     playDependencyClasspath := (externalDependencyClasspath in Runtime).value,
     playCommonClassloader := PlayCommands.playCommonClassloaderTask.value,
-    playCompileEverything := PlayCommands.playCompileEverythingTask.value.asInstanceOf[Seq[Analysis]],
     ivyLoggingLevel := UpdateLogging.DownloadOnly,
     playDefaultPort := 9000,
     playDefaultAddress := "0.0.0.0",
