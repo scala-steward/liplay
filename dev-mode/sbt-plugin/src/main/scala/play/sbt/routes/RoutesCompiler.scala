@@ -121,9 +121,9 @@ object RoutesCompiler extends AutoPlugin {
         thisProjectTasks ++ reverseRouterTasks
       }
     }.value),
-    Scope.Global / watchSources ++= (routes / sources).value,
+    Scope.Global / watchSources ++= Def.uncached((routes / sources).value),
     routes / target := crossTarget.value / "routes" / Defaults.nameForSrc(configuration.value.name),
-    routes := compileRoutesFiles.value,
+    routes := Def.uncached(compileRoutesFiles.value),
     sourceGenerators += Def.task(routes.value).taskValue,
     managedSourceDirectories += (routes / target).value
   )

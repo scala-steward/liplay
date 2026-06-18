@@ -65,7 +65,10 @@ lazy val nonUserProjects = Seq[ProjectReference](
 lazy val PlayFramework = Project("Play-Framework", file("."))
   .settings(
     playCommonSettings,
-    scalaVersion := (SbtRoutesCompilerProject / scalaVersion).value,
+    // The root is aggregate-only (no sources, publish/skip). Pin it to a Scala version where its
+    // vestigial `runtime` deps resolve — NOT the sbt-routes-compiler's Scala 3 (those runtime libs,
+    // e.g. play-json/akka/specs2-mock, have no Scala-3 build).
+    scalaVersion := scala213,
     crossScalaVersions := Nil,
     (Global / concurrentRestrictions) += Tags.limit(Tags.Test, 1),
     libraryDependencies ++= runtime(scalaVersion.value),

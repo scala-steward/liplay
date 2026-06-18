@@ -15,9 +15,12 @@ object BuildSettings {
   val playVersion = "2.8.18-lila_1.26"
 
   // Scala/sbt versions previously provided by interplay's ScalaVersions/SbtVersions.
-  val scala212 = "2.12.17"
   val scala213 = "2.13.10"
-  val sbt17    = "1.7.2"
+  // The sbt-plugin and sbt-routes-compiler are built against the sbt 2.0 API (Scala 3). The
+  // meta-build itself stays on sbt 1.12 (project/build.properties); only the plugin project's
+  // `pluginCrossBuild / sbtVersion` selects the sbt-2 jars to compile against.
+  val scala3 = "3.8.4"
+  val sbt2   = "2.0.0"
 
   /** File header settings.  */
   private def fileUriRegexFilter(pattern: String): FileFilter = new FileFilter {
@@ -142,8 +145,7 @@ object BuildSettings {
     Project(name, file(dir))
       .settings(
         playCommonSettings,
-        scalaVersion := scala212,
-        crossScalaVersions := Seq(scala212),
+        scalaVersion := scala3,
       )
   }
 
@@ -154,9 +156,9 @@ object BuildSettings {
       .settings(
         playCommonSettings,
         playScriptedSettings,
-        scalaVersion := scala212,
-        crossScalaVersions := Seq(scala212),
-        (pluginCrossBuild / sbtVersion) := sbt17,
+        scalaVersion := scala3,
+        // Compile the plugin against the sbt 2.0 API even though the launcher is sbt 1.12.
+        (pluginCrossBuild / sbtVersion) := sbt2,
         (Test / fork) := false,
       )
   }

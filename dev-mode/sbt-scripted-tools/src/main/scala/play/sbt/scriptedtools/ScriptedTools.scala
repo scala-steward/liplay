@@ -17,6 +17,7 @@ import scala.collection.mutable.ListBuffer
 
 import sbt._
 import sbt.Keys._
+import sbt.ProjectExtra.{ inConfig, given }
 
 import play.sbt.routes.RoutesCompiler.autoImport._
 
@@ -92,7 +93,8 @@ object ScriptedTools extends AutoPlugin {
     val messages = ListBuffer.empty[String]
     try {
       if (ssl) setupSsl()
-      val loc = if (ssl) url(s"https://localhost:9443$path") else url(s"http://localhost:9000$path")
+      // sbt 2.0's `url(...)` returns a URI; callUrlImpl wants a java.net.URL.
+      val loc = if (ssl) url(s"https://localhost:9443$path").toURL else url(s"http://localhost:9000$path").toURL
 
       val (requestStatus, contents) = callUrlImpl(loc, headers: _*)
 
@@ -123,7 +125,7 @@ object ScriptedTools extends AutoPlugin {
   }
 
   def callUrl(path: String, headers: (String, String)*): (Int, String) = {
-    callUrlImpl(url(s"http://localhost:9000$path"), headers: _*)
+    callUrlImpl(url(s"http://localhost:9000$path").toURL, headers: _*)
   }
 
   private def callUrlImpl(url: URL, headers: (String, String)*): (Int, String) = {
@@ -146,12 +148,14 @@ object ScriptedTools extends AutoPlugin {
 
   val dumpRoutesSourceOnCompilationFailure = {
     val settings = Seq(
-      compile := {
+      // sbt 2.0 caches `compile` (output CompileAnalysis has no JsonFormat); this override only
+      // adds a failure-dump side effect, so opt out of caching.
+      compile := Def.uncached {
         compile.result.value match {
-          case Value(v) => v
-          case Inc(inc) =>
+          case Result.Value(v) => v
+          case Result.Inc(inc) =>
             // If there was a compilation error, dump generated routes files so we can read them
-            ((Compile / routes / target).value ** AllPassFilter).filter(_.isFile).get.foreach { file =>
+            ((Compile / routes / target).value ** AllPassFilter).filter(_.isFile).get().foreach { file =>
               println(s"Dumping $file:")
               IO.readLines(file).zipWithIndex.foreach {
                 case (line, index) => println(f"${index + 1}%4d: $line")

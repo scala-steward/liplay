@@ -11,9 +11,11 @@ object Dependencies {
 
   // sync with documentation/project/plugins.sbt
   val sbtTwirlVersion: String = sys.props.getOrElse("twirl.version", "1.6.0-M7")
+  // The sbt-2 twirl plugin moved to the org.playframework.twirl org (see sbtDependencies).
+  val sbt2TwirlVersion = "2.1.0-M9"
   // when updating sbtNativePackager version, be sure to also update the documentation links in
   // documentation/manual/working/commonGuide/production/Deploying.md
-  val sbtNativePackagerVersion = "1.9.11"
+  val sbtNativePackagerVersion = "1.11.4"
 
   val playJsonVersion = "2.10.0-RC7"
 
@@ -130,13 +132,15 @@ object Dependencies {
     Seq(
       typesafeConfig,
       slf4jSimple,
-      sbtDep("com.typesafe.play" % "sbt-twirl"           % sbtTwirlVersion),
-      sbtDep("com.github.sbt"    % "sbt-native-packager" % sbtNativePackagerVersion),
-      // sbt-web was republished under com.github.sbt; the old com.typesafe.sbt:1.4.4 only lives
-      // on the now-defunct repo.scala-sbt.org resolver (absent from Maven Central).
-      sbtDep("com.github.sbt"    % "sbt-web"             % "1.5.0"),
+      // sbt-2 twirl plugin lives under the org.playframework.twirl org (was com.typesafe.play on sbt-1).
+      sbtDep("org.playframework.twirl" % "sbt-twirl"           % sbt2TwirlVersion),
+      sbtDep("com.github.sbt"          % "sbt-native-packager" % sbtNativePackagerVersion),
+      // NB: sbt-web is intentionally dropped — it has no sbt-2 build and the ported plugin sources
+      // no longer use it.
       logback             % Test
-    ) ++ specs2Deps.map(_ % Test)
+      // specs2CoreDeps (not specs2Deps): specs2-mock has no Scala-3 build at 4.17.0, and the
+      // sbt-plugin has no test sources using it.
+    ) ++ specs2CoreDeps.map(_ % Test)
   }
 
   val streamsDependencies = Seq(
