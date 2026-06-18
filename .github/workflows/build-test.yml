@@ -32,17 +32,15 @@ jobs:
     with:
       java: 11
       cmd: |
-        SCALA_CROSS_VERSIONS=`sbt -batch -error 'print Sbt-Routes-Compiler/crossScalaVersions' | tail -1 | tr -d '*[]"' | xargs`
-        # publishLocal everything the scripted tests resolve (sbt-scripted-tools -> sbt-plugin -> routes-compiler, play-exceptions)
+        # publishLocal everything the scripted tests resolve (sbt-scripted-tools -> sbt-plugin -> routes-compiler, play-exceptions),
+        # then run the scripted test. scala.version / scala.crossversions / project.version are provided
+        # by playScriptedSettings (see project/BuildSettings.scala), so no extra -D wiring is needed here.
         sbt \
           Play-Exceptions/publishLocal \
           Sbt-Routes-Compiler/publishLocal \
           Sbt-Plugin/publishLocal \
           Sbt-Scripted-Tools/publishLocal \
-          "project Sbt-Plugin" \
-          "set scriptedLaunchOpts += \"-Dscala.version=2.12.x\"" \
-          "set scriptedLaunchOpts += \"-Dscala.crossversions=$SCALA_CROSS_VERSIONS\"" \
-          "scripted play-sbt-plugin/show-versions"
+          "Sbt-Plugin/scripted play-sbt-plugin/show-versions"
 
   finish:
     name: Finish

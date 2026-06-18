@@ -121,9 +121,12 @@ object BuildSettings {
     // * run a publishLocal in the changes projects for fast feedback loops
     scriptedDependencies := (()), // drop Test/compile & publishLocal
     scriptedBufferLog := false,
-    // The scripted test projects reference the plugin via sys.props("project.version").
-    // (interplay used to provide this; reproduce it explicitly.)
+    // The scripted test projects reference the plugin via sys.props("project.version"), and
+    // ScriptedTools.scalaVersionFromJavaProperties() reads scala.version/scala.crossversions.
+    // interplay used to provide these; reproduce them from the build (single source of truth).
     scriptedLaunchOpts += s"-Dproject.version=${version.value}",
+    scriptedLaunchOpts += s"-Dscala.version=${scalaVersion.value}",
+    scriptedLaunchOpts += s"-Dscala.crossversions=${crossScalaVersions.value.mkString(" ")}",
     scriptedLaunchOpts ++= Seq(
       s"-Dsbt.boot.directory=${file(sys.props("user.home")) / ".sbt" / "boot"}",
       "-Xmx512m",
