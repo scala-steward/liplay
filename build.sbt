@@ -3,11 +3,9 @@
 import BuildSettings._
 import Dependencies._
 import Generators._
-import interplay.PlayBuildBase.autoImport._
 import sbt.Keys.parallelExecution
 import sbt._
 import sbt.io.Path._
-import org.scalafmt.sbt.ScalafmtPlugin
 
 lazy val RoutesCompilerProject = PlayDevelopmentProject("Routes-Compiler", "dev-mode/routes-compiler")
   .enablePlugins(SbtTwirl)
@@ -59,15 +57,12 @@ lazy val nonUserProjects = Seq[ProjectReference](
 )
 
 lazy val PlayFramework = Project("Play-Framework", file("."))
-  .enablePlugins(PlayRootProject)
   .settings(
     playCommonSettings,
     scalaVersion := (SbtRoutesCompilerProject / scalaVersion).value,
     crossScalaVersions := Nil,
-    (ThisBuild / playBuildRepoName) := "playframework",
     (Global / concurrentRestrictions) += Tags.limit(Tags.Test, 1),
     libraryDependencies ++= runtime(scalaVersion.value),
-    mimaReportBinaryIssues := (()),
     commands += Commands.quickPublish,
     publish / skip := true,
   )

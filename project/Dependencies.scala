@@ -132,7 +132,9 @@ object Dependencies {
       slf4jSimple,
       sbtDep("com.typesafe.play" % "sbt-twirl"           % sbtTwirlVersion),
       sbtDep("com.github.sbt"    % "sbt-native-packager" % sbtNativePackagerVersion),
-      sbtDep("com.typesafe.sbt"  % "sbt-web"             % "1.4.4"),
+      // sbt-web was republished under com.github.sbt; the old com.typesafe.sbt:1.4.4 only lives
+      // on the now-defunct repo.scala-sbt.org resolver (absent from Maven Central).
+      sbtDep("com.github.sbt"    % "sbt-web"             % "1.5.0"),
       logback             % Test
     ) ++ specs2Deps.map(_ % Test)
   }
