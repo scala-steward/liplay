@@ -7,17 +7,9 @@ import sbt.Keys.parallelExecution
 import sbt._
 import sbt.io.Path._
 
-lazy val RoutesCompilerProject = PlayDevelopmentProject("Routes-Compiler", "dev-mode/routes-compiler")
-  .enablePlugins(SbtTwirl)
-  .settings(
-    libraryDependencies ++= routesCompilerDependencies(scalaVersion.value),
-    TwirlKeys.templateFormats := Map("twirl" -> "play.routes.compiler.ScalaFormat")
-  )
-
 lazy val SbtRoutesCompilerProject = PlaySbtProject("Sbt-Routes-Compiler", "dev-mode/routes-compiler")
   .enablePlugins(SbtTwirl)
   .settings(
-    target := target.value / "sbt-routes-compiler",
     libraryDependencies ++= routesCompilerDependencies(scalaVersion.value),
     TwirlKeys.templateFormats := Map("twirl" -> "play.routes.compiler.ScalaFormat")
   )
@@ -53,7 +45,6 @@ lazy val SbtScriptedToolsProject = PlaySbtPluginProject("Sbt-Scripted-Tools", "d
 //
 // Keep in mind that specific configurations (like skip in publish) will be respected.
 lazy val userProjects = Seq[ProjectReference](
-  RoutesCompilerProject,
   PlayExceptionsProject,
 )
 lazy val nonUserProjects = Seq[ProjectReference](
