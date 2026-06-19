@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
 
 object BuildSettings {
 
-  val playVersion = "2.0.0-RC1"
+  val playVersion = "2.0.0-RC2"
 
   // Scala/sbt versions previously provided by interplay's ScalaVersions/SbtVersions.
   val scala213 = "2.13.10"
