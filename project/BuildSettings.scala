@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
 
 object BuildSettings {
 
-  val playVersion = "2.8.18-lila_1.26"
+  val playVersion = "2.0.0-RC1"
 
   // Scala/sbt versions previously provided by interplay's ScalaVersions/SbtVersions.
   val scala213 = "2.13.10"
@@ -44,7 +44,7 @@ object BuildSettings {
 
   /** These settings are used by all projects. */
   def playCommonSettings: Seq[Setting[_]] = Def.settings(
-    organization := "com.typesafe.play",
+    organization := "org.lichess.play",
     ivyLoggingLevel := UpdateLogging.DownloadOnly,
     resolvers ++= Resolver.sonatypeOssRepos("releases"), // sync ScriptedTools.scala
     resolvers ++= Seq(
