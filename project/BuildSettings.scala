@@ -106,16 +106,6 @@ object BuildSettings {
       )
   }
 
-  /** A project that is only used when running in development. */
-  def PlayDevelopmentProject(name: String, dir: String): Project = {
-    Project(name, file(dir))
-      .settings(
-        playCommonSettings,
-        scalaVersion := scala213,
-        crossScalaVersions := Seq(scala213),
-      )
-  }
-
   def playScriptedSettings: Seq[Setting[_]] = Seq(
     // Don't automatically publish anything.
     // The test-sbt-plugins-* scripts publish before running the scripted tests.

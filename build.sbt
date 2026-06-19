@@ -25,8 +25,6 @@ lazy val SbtPluginProject = PlaySbtPluginProject("Sbt-Plugin", "dev-mode/sbt-plu
         version.value,
         (SbtRoutesCompilerProject / scalaVersion).value,
         sbtVersion.value,
-        Dependencies.akkaVersion,
-        Dependencies.akkaHttpVersion,
         (Compile / sourceManaged).value
       )
     }.taskValue
@@ -38,32 +36,18 @@ lazy val SbtScriptedToolsProject = PlaySbtPluginProject("Sbt-Scripted-Tools", "d
   .enablePlugins(SbtPlugin)
   .dependsOn(SbtPluginProject)
 
-// These projects are aggregate by the root project and every
-// task (compile, test, publish, etc) executed for the root
-// project will also be executed for them:
-// https://www.scala-sbt.org/1.x/docs/Multi-Project.html#Aggregation
-//
-// Keep in mind that specific configurations (like skip in publish) will be respected.
-lazy val userProjects = Seq[ProjectReference](
-  PlayExceptionsProject,
-)
-lazy val nonUserProjects = Seq[ProjectReference](
-  SbtRoutesCompilerProject,
-  SbtPluginProject,
-  SbtScriptedToolsProject,
-)
-
 lazy val PlayFramework = Project("Play-Framework", file("."))
   .settings(
     playCommonSettings,
-    // The root is aggregate-only (no sources, publish/skip). Pin it to a Scala version where its
-    // vestigial `runtime` deps resolve — NOT the sbt-routes-compiler's Scala 3 (those runtime libs,
-    // e.g. play-json/akka/specs2-mock, have no Scala-3 build).
-    scalaVersion := scala213,
+    scalaVersion := scala3,
     crossScalaVersions := Nil,
     (Global / concurrentRestrictions) += Tags.limit(Tags.Test, 1),
-    libraryDependencies ++= runtime(scalaVersion.value),
     commands += Commands.quickPublish,
     publish / skip := true,
   )
-  .aggregate((userProjects ++ nonUserProjects): _*)
+  .aggregate(
+    PlayExceptionsProject,
+    SbtRoutesCompilerProject,
+    SbtPluginProject,
+    SbtScriptedToolsProject,
+  )
