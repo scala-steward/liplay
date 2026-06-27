@@ -134,53 +134,6 @@ trait Cookies extends Iterable[Cookie] {
 }
 
 /**
- * Helper utilities to encode Cookies.
- */
-object Cookies extends CookieHeaderEncoding {
-  // Use global state for cookie header configuration
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.6.0")
-  protected override def config: CookiesConfiguration = HttpConfiguration.current.cookies
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def fromSetCookieHeader(header: Option[String]): Cookies =
-    super.fromSetCookieHeader(header)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def encodeSetCookieHeader(cookies: Seq[Cookie]): String =
-    super.encodeSetCookieHeader(cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def encodeCookieHeader(cookies: Seq[Cookie]): String =
-    super.encodeCookieHeader(cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def decodeSetCookieHeader(cookieHeader: String): Seq[Cookie] =
-    super.decodeSetCookieHeader(cookieHeader)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def decodeCookieHeader(cookieHeader: String): Seq[Cookie] =
-    super.decodeCookieHeader(cookieHeader)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def mergeSetCookieHeader(cookieHeader: String, cookies: Seq[Cookie]): String =
-    super.mergeSetCookieHeader(cookieHeader, cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def mergeCookieHeader(cookieHeader: String, cookies: Seq[Cookie]): String =
-    super.mergeCookieHeader(cookieHeader, cookies)
-
-  def apply(cookies: Seq[Cookie]): Cookies = new Cookies {
-    lazy val cookiesByName = cookies.groupBy(_.name).view.mapValues(_.head)
-
-    override def get(name: String) = cookiesByName.get(name)
-
-    override def foreach[U](f: Cookie => U) = cookies.foreach(f)
-
-    def iterator: Iterator[Cookie] = cookies.iterator
-  }
-}
-
-/**
  * Logic for encoding and decoding `Cookie` and `Set-Cookie` headers.
  */
 trait CookieHeaderEncoding {
