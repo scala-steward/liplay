@@ -15,6 +15,7 @@ scalacOptions ++= Seq(
   "-rewrite",
   "-release:21",
 )
+ThisBuild / publishTo := Option(Resolver.file("file", new File(sys.props.getOrElse("publishTo", ""))))
 
 lazy val StreamsProject = Project("Play-Streams", file("core/play-streams"))
   .settings(playCommonSettings)
