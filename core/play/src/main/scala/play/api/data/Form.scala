@@ -447,6 +447,7 @@ private[data] object FormUtils {
               case JsString(v)  => v
               case JsNumber(v)  => v.toString
               case JsBoolean(v) => v.toString
+              case _ => throw RuntimeException("Impossiple case, we're already cover other cases")
             }
             val prefix             = ctx.prefix
             val newCumulativeChars = cumulativeChars + prefix.length + value.length

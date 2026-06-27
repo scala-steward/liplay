@@ -44,6 +44,10 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import play.api.mvc.request.DefaultRequestFactory
+import io.netty.channel.epoll.EpollIoHandle
+import io.netty.channel.epoll.EpollIoHandler
+import io.netty.channel.nio.NioIoHandler
+import scala.annotation.nowarn
 
 sealed trait NettyTransport
 case object Jdk    extends NettyTransport
@@ -91,8 +95,8 @@ class NettyServer(
   private val eventLoop = {
     val threadFactory = NamedThreadFactory("netty-event-loop")
     transport match {
-      case Native => new EpollEventLoopGroup(threadCount, threadFactory)
-      case Jdk    => new NioEventLoopGroup(threadCount, threadFactory)
+      case Native => new MultiThreadIoEventLoopGroup(threadCount, threadFactory, EpollIoHandler.newFactory())
+      case Jdk    => new MultiThreadIoEventLoopGroup(threadCount, threadFactory, NioIoHandler.newFactory())
     }
   }
 
@@ -167,6 +171,7 @@ class NettyServer(
   /**
    * Create a sink for the incoming connection channels.
    */
+  @nowarn // for deprecated childChannelEventLoop.register(connChannel)
   private def channelSink(port: Int): Sink[Channel, Future[Done]] = {
     Sink.foreach[Channel] { (connChannel: Channel) =>
       // Setup the channel for explicit reads
@@ -202,6 +207,7 @@ class NettyServer(
       val childChannelEventLoop = eventLoop.next()
       childChannelEventLoop.register(connChannel)
       allChannels.add(connChannel)
+
     }
   }
 

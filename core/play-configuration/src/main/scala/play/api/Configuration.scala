@@ -511,8 +511,8 @@ object ConfigLoader {
   implicit val configurationLoader: ConfigLoader[Configuration]         = configLoader.map(Configuration(_))
   implicit val seqConfigurationLoader: ConfigLoader[Seq[Configuration]] = seqConfigLoader.map(_.map(Configuration(_)))
 
-  implicit val urlLoader: ConfigLoader[URL] = ConfigLoader(_.getString).map(new URL(_))
   implicit val uriLoader: ConfigLoader[URI] = ConfigLoader(_.getString).map(new URI(_))
+  implicit val urlLoader: ConfigLoader[URL] = uriLoader.map(_.toURL)
 
   private def javaDurationToScala(javaDuration: java.time.Duration): FiniteDuration =
     Duration.fromNanos(javaDuration.toNanos)

@@ -165,7 +165,10 @@ object AcceptEncoding {
           logger.debug(s"Unable to parse part of Accept-Encoding header '${next.source}'")
         }
         encs
-      case AcceptEncodingParser.NoSuccess(err, _) =>
+      case AcceptEncodingParser.Error(err, _) =>
+        logger.debug(s"Unable to parse Accept-Encoding header '$acceptEncoding': $err")
+        Seq.empty
+      case AcceptEncodingParser.Failure(err, _) =>
         logger.debug(s"Unable to parse Accept-Encoding header '$acceptEncoding': $err")
         Seq.empty
     }

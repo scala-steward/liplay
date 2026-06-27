@@ -1151,7 +1151,7 @@ object BodyParsers {
             override def onPull(): Unit = {
               pull(in)
             }
-            override def onDownstreamFinish(): Unit = {
+            override def onDownstreamFinish(cause: Throwable): Unit = {
               status.success(MaxSizeNotExceeded)
               completeStage()
             }

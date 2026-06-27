@@ -193,7 +193,7 @@ object HttpConfiguration {
           case _ => // "foo=bar".span(_ != '=') -> (foo,=bar)
             line.span(_ != '=') match {
               case (key, v) => Some(key -> v.drop(1))         // '=' prefix
-              case _        => Option.empty[(String, String)] // skip invalid
+              case null     => Option.empty[(String, String)] // skip invalid
             }
         }
       }

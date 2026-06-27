@@ -30,6 +30,7 @@ import scala.concurrent.*
 import scala.concurrent.duration.Duration
 import scala.reflect.ClassTag
 import scala.util.Try
+import scala.annotation.nowarn
 
 /**
  * Helper to access the application defined Akka Actor system.
@@ -74,6 +75,7 @@ trait AkkaComponents {
     actorSystem
   ).get
 
+  @nowarn
   lazy val coordinatedShutdown: CoordinatedShutdown =
     new CoordinatedShutdownProvider(actorSystem, applicationLifecycle).get
 
@@ -259,6 +261,7 @@ class CoordinatedShutdownProvider @Inject() (actorSystem: ActorSystem, applicati
     extends Provider[CoordinatedShutdown] {
   import CoordinatedShutdownProvider.logger
 
+  @nowarn // for applicationLifecycle.stop()
   lazy val get: CoordinatedShutdown = {
     logWarningWhenRunPhaseConfigIsPresent()
 
@@ -266,6 +269,7 @@ class CoordinatedShutdownProvider @Inject() (actorSystem: ActorSystem, applicati
 
     val cs = CoordinatedShutdown(actorSystem)
     // Once the ActorSystem is built we can register the ApplicationLifecycle stopHooks as a CoordinatedShutdown phase.
+    //
     CoordinatedShutdown(actorSystem)
       .addTask(CoordinatedShutdown.PhaseServiceStop, "application-lifecycle-stophook")(() => {
         applicationLifecycle.stop().map(_ => Done)
