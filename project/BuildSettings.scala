@@ -17,7 +17,8 @@ object BuildSettings {
 
   /** These settings are used by all projects. */
   def playCommonSettings: Seq[Setting[_]] = Def.settings(
-    scalaVersion    := "3.8.4",
+    organization := "com.typesafe.play",
+    scalaVersion := "3.8.4",
     javacOptions ++= Seq("-encoding", "UTF-8", "--release", "21"),
     (Compile / scalacOptions)       := Seq("-release:21"),
     (Compile / doc / scalacOptions) := Seq("-no-java-comments"),
@@ -35,7 +36,7 @@ object BuildSettings {
   /** A project that is in the Play runtime. */
   def PlayCrossBuiltProject(name: String, dir: String): Project = {
     Project(name, file(dir))
-    .settings(playCommonSettings)
+      .settings(playCommonSettings)
   }
 
 }
