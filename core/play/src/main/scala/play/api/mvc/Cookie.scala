@@ -4,12 +4,8 @@
 
 package play.api.mvc
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -21,10 +17,7 @@ import play.api.inject.bind
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.crypto.CookieSignerProvider
 import play.api.mvc.Cookie.SameSite
-import play.libs.Scala
 
-import javax.crypto.SecretKey
-import javax.crypto.spec.SecretKeySpec
 import scala.collection.immutable.ListMap
 import scala.util.Try
 import scala.util.control.NonFatal

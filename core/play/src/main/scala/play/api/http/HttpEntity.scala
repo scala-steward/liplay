@@ -9,7 +9,6 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import play.api.mvc.Headers
 
-import scala.jdk.OptionConverters.*
 import scala.concurrent.Future
 
 /**

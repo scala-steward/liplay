@@ -11,7 +11,6 @@ import java.nio.file.Files
 import java.util.Locale
 
 import javax.inject.Inject
-import akka.actor.ActorSystem
 import akka.stream.*
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Sink
@@ -240,7 +239,6 @@ case class RawBuffer(
     temporaryFileCreator: TemporaryFileCreator,
     initialData: ByteString = ByteString.empty
 ) {
-  import play.api.libs.Files.*
 
   @volatile private var inMemory: ByteString                 = initialData
   @volatile private var backedByTemporaryFile: TemporaryFile = scala.compiletime.uninitialized

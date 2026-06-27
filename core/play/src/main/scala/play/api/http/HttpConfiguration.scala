@@ -18,7 +18,6 @@ import play.core.cookie.encoding.ClientCookieEncoder
 import play.core.cookie.encoding.ServerCookieDecoder
 import play.core.cookie.encoding.ServerCookieEncoder
 
-import java.nio.charset.StandardCharsets
 import scala.concurrent.duration.*
 import scala.util.Failure
 import scala.util.Success

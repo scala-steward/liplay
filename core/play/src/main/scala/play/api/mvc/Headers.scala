@@ -9,8 +9,6 @@ import java.util.Locale
 import play.api.http.HeaderNames
 import play.core.utils.CaseInsensitiveOrdered
 
-import scala.jdk.CollectionConverters.*
-
 import scala.collection.immutable.TreeMap
 import scala.collection.immutable.TreeSet
 

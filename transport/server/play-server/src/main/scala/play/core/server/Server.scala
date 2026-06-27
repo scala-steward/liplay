@@ -4,25 +4,19 @@
 
 package play.core.server
 
-import java.util.function.{ Function as JFunction }
 import akka.actor.CoordinatedShutdown
-import akka.annotation.ApiMayChange
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import play.api.*
 import play.api.http.HttpErrorHandler
-import play.api.http.Port
 import play.api.inject.ApplicationLifecycle
 import play.api.inject.DefaultApplicationLifecycle
 import play.api.libs.streams.Accumulator
 import play.api.mvc.*
-import play.api.routing.Router
 import play.core.*
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-import scala.util.Try
-import play.api.http.DefaultHttpErrorHandler
 
 /**
  * Provides generic server behaviour for Play applications.

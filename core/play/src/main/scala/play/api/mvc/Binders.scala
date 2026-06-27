@@ -5,15 +5,9 @@
 package play.api.mvc
 
 import java.net.URLEncoder
-import java.util.Optional
-import java.util.OptionalDouble
-import java.util.OptionalInt
-import java.util.OptionalLong
 import java.util.UUID
 import scala.annotation.*
 
-import scala.jdk.CollectionConverters.*
-import scala.jdk.OptionConverters.*
 
 import reflect.ClassTag
 

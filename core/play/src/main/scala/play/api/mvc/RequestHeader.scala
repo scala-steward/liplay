@@ -5,7 +5,6 @@
 package play.api.mvc
 
 import java.security.cert.X509Certificate
-import java.util.Locale
 
 import play.api.http.HeaderNames
 import play.api.http.MediaRange

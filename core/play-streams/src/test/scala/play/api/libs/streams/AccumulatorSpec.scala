@@ -14,7 +14,6 @@ import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import org.specs2.mutable.Specification
 
-import scala.jdk.FutureConverters.*
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.*

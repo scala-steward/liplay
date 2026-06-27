@@ -9,7 +9,6 @@ import javax.inject.Provider
 
 import play.api.http.Status.*
 import play.api.inject.Binding
-import play.api.inject.BindingKey
 import play.api.libs.streams.Accumulator
 import play.api.mvc.*
 import play.api.routing.Router

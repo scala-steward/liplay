@@ -29,12 +29,10 @@ import io.netty.channel.unix.UnixChannelOption
 import io.netty.handler.codec.http.*
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
-import io.netty.handler.ssl.SslHandler
 import io.netty.handler.timeout.IdleStateHandler
 import play.api.*
 import play.api.http.HttpProtocol
 import play.api.internal.libs.concurrent.CoordinatedShutdownSupport
-import play.api.routing.Router
 import play.core.*
 import play.core.server.Server.ServerStoppedReason
 import play.core.server.netty.*
@@ -45,7 +43,6 @@ import scala.jdk.CollectionConverters.*
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.util.control.NonFatal
 import play.api.mvc.request.DefaultRequestFactory
 
 sealed trait NettyTransport

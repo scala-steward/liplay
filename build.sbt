@@ -9,11 +9,14 @@ import sbt.io.Path._
 import org.scalafmt.sbt.ScalafmtPlugin
 
 ThisBuild / scalacOptions ++= Seq(
+  "-encoding",
+  "utf-8",
   "nowarn", // migration
-  "-Xcheck-macros",
-  "-source:future-migration",
-  "-rewrite",
   "-release:21",
+  "-rewrite",
+  // "-Wunused:all",
+  // "-Werror",
+  "-deprecation"
 )
 ThisBuild / publishTo := Option(Resolver.file("file", new File(sys.props.getOrElse("publishTo", ""))))
 

@@ -4,22 +4,17 @@
 
 package play.api.libs.streams
 
-import java.util.Optional
-
 import akka.stream.Materializer
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Keep
 import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 
-import scala.annotation.unchecked.{ uncheckedVariance as uV }
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.jdk.FutureConverters.*
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-import scala.jdk.OptionConverters.*
 
 /**
  * An accumulator of elements into a future of a result.

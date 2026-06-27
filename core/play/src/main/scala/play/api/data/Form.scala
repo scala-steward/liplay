@@ -10,7 +10,6 @@ import scala.language.existentials
 import play.api.data.format.*
 import play.api.data.validation.*
 import play.api.http.HttpVerbs
-import play.api.i18n.*
 import play.api.libs.json.*
 import play.api.mvc.*
 import scala.util.control.NoStackTrace

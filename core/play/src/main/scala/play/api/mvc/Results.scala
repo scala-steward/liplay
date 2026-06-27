@@ -19,7 +19,6 @@ import akka.util.ByteString
 import play.api.http.HeaderNames.*
 import play.api.http.FileMimeTypes
 import play.api.http.*
-import play.api.i18n.Lang
 import play.api.Logger
 import play.api.Mode
 import play.api.libs.typedmap.TypedEntry

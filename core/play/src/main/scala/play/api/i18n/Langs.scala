@@ -5,16 +5,10 @@
 package play.api.i18n
 
 import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Provider
-import javax.inject.Singleton
 
-import play.api.Configuration
 import play.api.Logger
 
 import scala.util.Try
-import scala.util.control.NonFatal
-import scala.jdk.CollectionConverters.*
 
 /**
  * A Lang supported by the application.

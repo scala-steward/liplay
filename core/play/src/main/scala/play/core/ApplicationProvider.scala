@@ -4,12 +4,10 @@
 
 package play.core
 
-import java.io.*
 import scala.util.Try
 import scala.util.Success
 
 import play.api.*
-import play.api.mvc.*
 
 /**
  * Provides information about a Play Application running inside a Play server.
