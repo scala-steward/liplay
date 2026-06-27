@@ -75,7 +75,8 @@ class Headers(protected var _headers: Seq[(String, String)]) {
    * Remove any headers with the given keys
    */
   def remove(keys: String*): Headers = {
-    val keySet = TreeSet(keys *)(CaseInsensitiveOrdered)
+    // given Ordering[String] = CaseInsensitiveOrdered
+    val keySet = TreeSet(keys *)(using CaseInsensitiveOrdered)
     new Headers(headers.filterNot { case (name, _) => keySet(name) })
   }
 
