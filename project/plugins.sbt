@@ -6,7 +6,7 @@ lazy val plugins = (project in file(".")).settings(
 enablePlugins(BuildInfoPlugin)
 
 val scalafmt         = "2.4.6"
-val sbtTwirl: String = sys.props.getOrElse("twirl.version", "1.6.1") // sync with documentation/project/plugins.sbt
+val sbtTwirl: String = "1.6.1"
 
 buildInfoKeys := Seq[BuildInfoKey](
   "sbtTwirlVersion" -> sbtTwirl,
@@ -16,5 +16,5 @@ logLevel := Level.Warn
 
 scalacOptions ++= Seq("-deprecation", "-language:_")
 
-addSbtPlugin("com.typesafe.play" % "sbt-twirl"       % sbtTwirl)
-addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % scalafmt)
+addSbtPlugin("com.typesafe.play" % "sbt-twirl"    % sbtTwirl)
+addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % scalafmt)
