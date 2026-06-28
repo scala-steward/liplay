@@ -4,19 +4,14 @@
 
 package play.api.mvc
 
-import java.util.Locale
-import java.util.Optional
 
-import play.api.i18n.Lang
 import play.api.libs.typedmap.TypedEntry
 import play.api.libs.typedmap.TypedKey
 import play.api.libs.typedmap.TypedMap
 import play.api.mvc.request.RemoteConnection
 import play.api.mvc.request.RequestTarget
-import play.mvc.Http
 
 import scala.annotation.implicitNotFound
-import scala.annotation.tailrec
 
 /**
  * The complete HTTP request.
@@ -33,7 +28,7 @@ trait Request[+A] extends RequestHeader {
    */
   override def hasBody: Boolean = {
     import play.api.http.HeaderNames.*
-    if (headers.get(CONTENT_LENGTH).isDefined || headers.get(TRANSFER_ENCODING).isDefined) {
+    if headers.get(CONTENT_LENGTH).isDefined || headers.get(TRANSFER_ENCODING).isDefined then {
       // A relevant header is set, which means this is a real request or a fake request used for testing where the user
       // cared about setting the headers. We can just use them to see if a body exists. In a real life production application,
       // where clients basically always send these headers when applicable (for requests that send bodies like POST, etc.)

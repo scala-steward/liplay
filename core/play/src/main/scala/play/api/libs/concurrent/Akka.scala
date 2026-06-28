@@ -30,6 +30,7 @@ import scala.concurrent.*
 import scala.concurrent.duration.Duration
 import scala.reflect.ClassTag
 import scala.util.Try
+import scala.annotation.nowarn
 
 /**
  * Helper to access the application defined Akka Actor system.
@@ -74,10 +75,11 @@ trait AkkaComponents {
     actorSystem
   ).get
 
+  @nowarn
   lazy val coordinatedShutdown: CoordinatedShutdown =
     new CoordinatedShutdownProvider(actorSystem, applicationLifecycle).get
 
-  implicit lazy val materializer: Materializer = Materializer.matFromSystem(actorSystem)
+  implicit lazy val materializer: Materializer = Materializer.matFromSystem(using actorSystem)
 
   implicit lazy val executionContext: ExecutionContext = actorSystem.dispatcher
 }
@@ -113,7 +115,7 @@ class ClassicActorSystemProviderProvider @Inject() (actorSystem: ActorSystem)
  */
 @Singleton
 class MaterializerProvider @Inject() (actorSystem: ActorSystem) extends Provider[Materializer] {
-  lazy val get: Materializer = Materializer.matFromSystem(actorSystem)
+  lazy val get: Materializer = Materializer.matFromSystem(using actorSystem)
 }
 
 /**
@@ -171,7 +173,7 @@ object ActorSystemProvider {
    */
   def start(classLoader: ClassLoader, config: Configuration, additionalSetups: Setup*): ActorSystem = {
     val exitJvmPath = "akka.coordinated-shutdown.exit-jvm"
-    if (config.get[Boolean](exitJvmPath)) {
+    if config.get[Boolean](exitJvmPath) then {
       // When this setting is enabled, there'll be a deadlock at shutdown. Therefore, we
       // prevent the creation of the Actor System.
       val errorMessage =
@@ -228,7 +230,7 @@ trait InjectedActorSupport {
    * @return An ActorRef for the created actor.
    */
   def injectedChild(create: => Actor, name: String, props: Props => Props = identity)(
-      implicit context: ActorContext
+      using context: ActorContext
   ): ActorRef = {
     context.actorOf(props(Props(create)), name)
   }
@@ -238,8 +240,8 @@ trait InjectedActorSupport {
  * Provider for creating actor refs
  */
 class ActorRefProvider[T <: Actor: ClassTag](name: String, props: Props => Props) extends Provider[ActorRef] {
-  @Inject private var actorSystem: ActorSystem = _
-  @Inject private var injector: Injector       = _
+  @Inject private var actorSystem: ActorSystem = scala.compiletime.uninitialized
+  @Inject private var injector: Injector       = scala.compiletime.uninitialized
 
   lazy val get: ActorRef = {
     val creation = Props(injector.instanceOf[T])
@@ -259,6 +261,7 @@ class CoordinatedShutdownProvider @Inject() (actorSystem: ActorSystem, applicati
     extends Provider[CoordinatedShutdown] {
   import CoordinatedShutdownProvider.logger
 
+  @nowarn // for applicationLifecycle.stop()
   lazy val get: CoordinatedShutdown = {
     logWarningWhenRunPhaseConfigIsPresent()
 
@@ -266,6 +269,7 @@ class CoordinatedShutdownProvider @Inject() (actorSystem: ActorSystem, applicati
 
     val cs = CoordinatedShutdown(actorSystem)
     // Once the ActorSystem is built we can register the ApplicationLifecycle stopHooks as a CoordinatedShutdown phase.
+    //
     CoordinatedShutdown(actorSystem)
       .addTask(CoordinatedShutdown.PhaseServiceStop, "application-lifecycle-stophook")(() => {
         applicationLifecycle.stop().map(_ => Done)
@@ -276,7 +280,7 @@ class CoordinatedShutdownProvider @Inject() (actorSystem: ActorSystem, applicati
 
   private def logWarningWhenRunPhaseConfigIsPresent(): Unit = {
     val config = actorSystem.settings.config
-    if (config.hasPath("play.akka.run-cs-from-phase")) {
+    if config.hasPath("play.akka.run-cs-from-phase") then {
       logger.warn(
         "Configuration 'play.akka.run-cs-from-phase' was deprecated and has no effect. Play now runs all the CoordinatedShutdown phases."
       )

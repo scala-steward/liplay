@@ -14,7 +14,6 @@ import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import org.specs2.mutable.Specification
 
-import scala.jdk.FutureConverters.*
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.*
@@ -24,7 +23,7 @@ class AccumulatorSpec extends Specification {
   def withMaterializer[T](block: Materializer => T): T = {
     val system = ActorSystem("test")
     try {
-      block(Materializer.matFromSystem(system))
+      block(Materializer.matFromSystem(using system))
     } finally {
       system.terminate()
       Await.result(system.whenTerminated, Duration.Inf)

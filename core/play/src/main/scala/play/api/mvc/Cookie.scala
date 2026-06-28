@@ -4,12 +4,8 @@
 
 package play.api.mvc
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import java.net.URLDecoder
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
@@ -21,10 +17,7 @@ import play.api.inject.bind
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.crypto.CookieSignerProvider
 import play.api.mvc.Cookie.SameSite
-import play.libs.Scala
 
-import javax.crypto.SecretKey
-import javax.crypto.spec.SecretKeySpec
 import scala.collection.immutable.ListMap
 import scala.util.Try
 import scala.util.control.NonFatal
@@ -75,21 +68,21 @@ object Cookie {
     val SecurePrefix = "__Secure-"
     val HostPrefix   = "__Host-"
     @inline def warnIfNotSecure(prefix: String): Unit = {
-      if (!cookie.secure) {
+      if !cookie.secure then {
         logger.warn(s"$prefix prefix is used for cookie but Secure flag not set! Setting now. Cookie is: $cookie")(
-          SecurityMarkerContext
+          using SecurityMarkerContext
         )
       }
     }
 
-    if (cookie.name.startsWith(SecurePrefix)) {
+    if cookie.name.startsWith(SecurePrefix) then {
       warnIfNotSecure(SecurePrefix)
       cookie.copy(secure = true)
-    } else if (cookie.name.startsWith(HostPrefix)) {
+    } else if cookie.name.startsWith(HostPrefix) then {
       warnIfNotSecure(HostPrefix)
-      if (cookie.path != "/") {
+      if cookie.path != "/" then {
         logger.warn(s"""$HostPrefix is used on cookie but Path is not "/"! Setting now. Cookie is: $cookie""")(
-          SecurityMarkerContext
+          using SecurityMarkerContext
         )
       }
       cookie.copy(secure = true, path = "/")
@@ -138,53 +131,6 @@ trait Cookies extends Iterable[Cookie] {
    * Retrieves the cookie that is associated with the given key.
    */
   def apply(name: String): Cookie = get(name).getOrElse(scala.sys.error("Cookie doesn't exist"))
-}
-
-/**
- * Helper utilities to encode Cookies.
- */
-object Cookies extends CookieHeaderEncoding {
-  // Use global state for cookie header configuration
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.6.0")
-  protected override def config: CookiesConfiguration = HttpConfiguration.current.cookies
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def fromSetCookieHeader(header: Option[String]): Cookies =
-    super.fromSetCookieHeader(header)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def encodeSetCookieHeader(cookies: Seq[Cookie]): String =
-    super.encodeSetCookieHeader(cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def encodeCookieHeader(cookies: Seq[Cookie]): String =
-    super.encodeCookieHeader(cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def decodeSetCookieHeader(cookieHeader: String): Seq[Cookie] =
-    super.decodeSetCookieHeader(cookieHeader)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def decodeCookieHeader(cookieHeader: String): Seq[Cookie] =
-    super.decodeCookieHeader(cookieHeader)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def mergeSetCookieHeader(cookieHeader: String, cookies: Seq[Cookie]): String =
-    super.mergeSetCookieHeader(cookieHeader, cookies)
-
-  @deprecated("Inject play.api.mvc.CookieHeaderEncoding instead", "2.8.1")
-  override def mergeCookieHeader(cookieHeader: String, cookies: Seq[Cookie]): String =
-    super.mergeCookieHeader(cookieHeader, cookies)
-
-  def apply(cookies: Seq[Cookie]): Cookies = new Cookies {
-    lazy val cookiesByName = cookies.groupBy(_.name).view.mapValues(_.head)
-
-    override def get(name: String) = cookiesByName.get(name)
-
-    override def foreach[U](f: Cookie => U) = cookies.foreach(f)
-
-    def iterator: Iterator[Cookie] = cookies.iterator
-  }
 }
 
 /**
@@ -287,19 +233,19 @@ trait CookieHeaderEncoding {
    * @return decoded cookies
    */
   def decodeSetCookieHeader(cookieHeader: String): Seq[Cookie] = {
-    if (cookieHeader.isEmpty) {
+    if cookieHeader.isEmpty then {
       // fail fast if there are no existing cookies
       Seq.empty
     } else {
       Try {
         val decoder = config.clientDecoder
-        val newCookies = for {
+        val newCookies = for
           cookieString <- SetCookieHeaderSeparatorRegex.split(cookieHeader).toSeq
           cookie       <- Option(decoder.decode(cookieString.trim))
-        } yield Cookie(
+        yield Cookie(
           cookie.name,
           cookie.value,
-          if (cookie.maxAge == Integer.MIN_VALUE) None else Some(cookie.maxAge),
+          if cookie.maxAge == Integer.MIN_VALUE then None else Some(cookie.maxAge),
           Option(cookie.path).getOrElse("/"),
           Option(cookie.domain),
           cookie.isSecure,
@@ -470,10 +416,10 @@ trait CookieBaker[T <: AnyRef] { self: CookieDataCodec =>
    * Decodes the data from a `Cookie`.
    */
   def decodeFromCookie(cookie: Option[Cookie]): T =
-    if (cookie.isEmpty) emptyCookie
+    if cookie.isEmpty then emptyCookie
     else {
       val extractedCookie: Cookie = cookie.get
-      if (extractedCookie.name != COOKIE_NAME) emptyCookie /* can this happen? */
+      if extractedCookie.name != COOKIE_NAME then emptyCookie /* can this happen? */
       else {
         deserialize(decode(extractedCookie.value))
       }
@@ -535,7 +481,7 @@ trait UrlEncodedCookieDataCodec extends CookieDataCodec {
     val encoded = data
       .map { case (k, v) => URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8") }
       .mkString("&")
-    if (isSigned)
+    if isSigned then
       cookieSigner.sign(encoded) + "-" + encoded
     else
       encoded
@@ -549,7 +495,7 @@ trait UrlEncodedCookieDataCodec extends CookieDataCodec {
       // In some cases we've seen clients ignore the Max-Age and Expires on a cookie, and fail to properly clear the
       // cookie. This can cause the client to send an empty cookie back to us after we've attempted to clear it. So
       // just decode empty cookies to an empty map. See https://github.com/playframework/playframework/issues/7680.
-      if (data.isEmpty) {
+      if data.isEmpty then {
         Map.empty[String, String]
       } else {
         data
@@ -572,11 +518,11 @@ trait UrlEncodedCookieDataCodec extends CookieDataCodec {
     // This method intentionally runs in constant time if the two strings have the same length.
     // If it didn't, it would be vulnerable to a timing attack.
     def safeEquals(a: String, b: String) = {
-      if (a.length != b.length) {
+      if a.length != b.length then {
         false
       } else {
         var equal = 0
-        for (i <- Array.range(0, a.length)) {
+        for i <- Array.range(0, a.length) do {
           equal |= a(i) ^ b(i)
         }
         equal == 0
@@ -584,20 +530,20 @@ trait UrlEncodedCookieDataCodec extends CookieDataCodec {
     }
 
     try {
-      if (isSigned) {
+      if isSigned then {
         val parts   = data.split("-", 2)
         val message = parts.tail.mkString("-")
-        if (safeEquals(parts(0), cookieSigner.sign(message))) {
+        if safeEquals(parts(0), cookieSigner.sign(message)) then {
           urldecode(message)
         } else {
-          logger.warn("Cookie failed message authentication check")(SecurityMarkerContext)
+          logger.warn("Cookie failed message authentication check")(using SecurityMarkerContext)
           Map.empty[String, String]
         }
       } else urldecode(data)
     } catch {
       // fail gracefully is the session cookie is corrupted
       case NonFatal(e) =>
-        logger.warn("Could not decode cookie", e)(SecurityMarkerContext)
+        logger.warn("Could not decode cookie", e)(using SecurityMarkerContext)
         Map.empty[String, String]
     }
   }

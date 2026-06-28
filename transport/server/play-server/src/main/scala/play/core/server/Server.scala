@@ -4,25 +4,19 @@
 
 package play.core.server
 
-import java.util.function.{ Function => JFunction }
 import akka.actor.CoordinatedShutdown
-import akka.annotation.ApiMayChange
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import play.api._
+import play.api.*
 import play.api.http.HttpErrorHandler
-import play.api.http.Port
 import play.api.inject.ApplicationLifecycle
 import play.api.inject.DefaultApplicationLifecycle
 import play.api.libs.streams.Accumulator
-import play.api.mvc._
-import play.api.routing.Router
-import play.core._
+import play.api.mvc.*
+import play.core.*
 
 import scala.concurrent.Future
 import scala.language.postfixOps
-import scala.util.Try
-import play.api.http.DefaultHttpErrorHandler
 
 /**
  * Provides generic server behaviour for Play applications.
@@ -78,7 +72,6 @@ object Server {
         errorHandler: HttpErrorHandler,
         req: RequestHeader
     ): PartialFunction[Throwable, (RequestHeader, Handler)] = {
-      case e: ThreadDeath         => throw e
       case e: VirtualMachineError => throw e
       case e: Throwable =>
         val errorResult = errorHandler.onServerError(req, e)
@@ -119,7 +112,7 @@ object Server {
   ): Long = {
     Configuration(config).getDeprecated[String](path, deprecatedPath) match {
       case "infinite" => Long.MaxValue
-      case _          => config.getBytes(if (config.hasPath(deprecatedPath)) deprecatedPath else path)
+      case _          => config.getBytes(if config.hasPath(deprecatedPath) then deprecatedPath else path)
     }
   }
 

@@ -4,8 +4,6 @@
 
 package play.api.http
 
-import java.util.concurrent.CompletionStage
-
 import javax.inject.*
 import play.api.*
 import play.api.http.Status.*
@@ -15,16 +13,10 @@ import play.api.libs.typedmap.TypedKey
 import play.api.mvc.Results.*
 import play.api.mvc.*
 import play.api.routing.Router
-import play.mvc.Http
-import play.utils.PlayIO
 import play.utils.Reflect
 
 import scala.annotation.tailrec
-import scala.jdk.FutureConverters.*
 import scala.concurrent.*
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
@@ -360,7 +352,7 @@ class JsonHttpErrorHandler(environment: Environment) extends HttpErrorHandler {
    * @param message The error message.
    */
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-    if (play.api.http.Status.isClientError(statusCode)) {
+    if play.api.http.Status.isClientError(statusCode) then {
       Future.successful(Results.Status(statusCode)(error(Json.obj("message" -> message))))
     } else {
       throw new IllegalArgumentException(
