@@ -9,10 +9,8 @@ import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import akka.util.ByteStringBuilder
-import play.twirl.api.utils.StringEscapeUtils
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
-import play.twirl.api.*
 
 /**
  * Helper function to produce a Comet using <a
@@ -34,9 +32,7 @@ import play.twirl.api.*
  * }}}
  */
 object Comet:
-  val initialHtmlChunk = Html(Array.fill[Char](5 * 1024)(' ').mkString + "<html><body>")
-
-  val initialByteString = ByteString.fromString(initialHtmlChunk.toString())
+  val initialByteString = ByteString.fromString(Array.fill[Char](5 * 1024)(' ').mkString + "<html><body>")
 
   /**
    * Produces a Flow of escaped ByteString from a series of String elements. Calls out to Comet.flow
@@ -49,7 +45,7 @@ object Comet:
    */
   def string(callbackName: String): Flow[String, ByteString, NotUsed] =
     Flow[String]
-      .map(str => ByteString.fromString("'" + StringEscapeUtils.escapeEcmaScript(str) + "'"))
+      .map(str => ByteString.fromString("'" + escapeEcmaScript(str) + "'"))
       .via(flow(callbackName))
 
   /**
@@ -96,12 +92,32 @@ object Comet:
     b.append(ByteString.fromString(");</script>"))
     b.result()
 
-  private def toHtml[A](callbackName: String, message: A): Html =
-    val javascriptMessage = message match
-      case str: String =>
-        "'" + StringEscapeUtils.escapeEcmaScript(str) + "'"
-      case json: JsValue =>
-        Json.stringify(json)
-      case other =>
-        throw new IllegalStateException("Illegal type found: only String or JsValue elements are valid")
-    Html(s"""<script>${callbackName}(${javascriptMessage});</script>""")
+  /**
+   * From
+   * https://github.com/playframework/twirl/blob/adde5d93e1598ce2665d7c35ab792260c3422f7d/api/shared/src/main/scala/play/twirl/api/utils/StringEscapeUtils.scala#L8-L31
+   * Inlined to avoid pulling Twirl into play core.
+   */
+  private def escapeEcmaScript(input: String): String =
+    val s = new StringBuilder()
+    val len = input.length
+    var pos = 0
+    while pos < len do
+      input.charAt(pos) match
+        // Standard Lookup
+        case '\'' => s.append("\\'")
+        case '\"' => s.append("\\\"")
+        case '\\' => s.append("\\\\")
+        case '/'  => s.append("\\/")
+        // JAVA_CTRL_CHARS
+        case '\b' => s.append("\\b")
+        case '\n' => s.append("\\n")
+        case '\t' => s.append("\\t")
+        case '\f' => s.append("\\f")
+        case '\r' => s.append("\\r")
+        // Ignore any character below ' '
+        case c if c < ' ' =>
+        // if it not matches any characters above, just append it
+        case c => s.append(c)
+      pos += 1
+
+    s.toString()

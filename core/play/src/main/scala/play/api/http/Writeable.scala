@@ -39,32 +39,9 @@ object Writeable extends DefaultWriteables:
     new Writeable(transform, ct.mimeType)
 
 /**
- * Default Writeable with lower priority.
- */
-trait LowPriorityWriteables:
-
-  /**
-   * `Writeable` for `play.twirl.api.Content` values.
-   */
-  implicit def writeableOf_Content[C <: play.twirl.api.Content](using
-      codec: Codec,
-      ct: ContentTypeOf[C]
-  ): Writeable[C] =
-    Writeable(content => codec.encode(content.body))
-
-/**
  * Default Writeable.
  */
-trait DefaultWriteables extends LowPriorityWriteables:
-
-  /**
-   * `Writeable` for `play.twirl.api.Xml` values. Trims surrounding whitespace.
-   */
-  implicit def writeableOf_XmlContent(using
-      codec: Codec,
-      ct: ContentTypeOf[play.twirl.api.Xml]
-  ): Writeable[play.twirl.api.Xml] =
-    Writeable(xml => codec.encode(xml.body.trim))
+trait DefaultWriteables:
 
   /**
    * `Writeable` for `NodeSeq` values - literal Scala XML.

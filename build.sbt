@@ -31,7 +31,6 @@ lazy val PlayExceptionsProject = Project("Play-Exceptions", file("core/play-exce
   )
 
 lazy val PlayProject = Project("Play", file("core/play"))
-  .enablePlugins(SbtTwirl)
   .settings(playCommonSettings)
   .settings(
     libraryDependencies ++= runtime(

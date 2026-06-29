@@ -44,6 +44,8 @@ object Dependencies {
   def scalaParserCombinators(scalaVersion: String) =
     Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0")
 
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
+
   val junitInterface = "com.github.sbt" % "junit-interface" % "0.13.3"
   val junit = "junit" % "junit" % "4.13.2"
 
@@ -56,7 +58,8 @@ object Dependencies {
       Seq(
         playJson,
         guava,
-        javaxInject
+        javaxInject,
+        scalaXml
       ) ++ scalaParserCombinators(scalaVersion) ++ specs2Deps.map(_ % Test)
 
   val nettyVersion = "4.2.2.Final"

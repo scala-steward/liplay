@@ -11,8 +11,6 @@ import akka.util.ByteString;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import play.api.http.HttpChunk;
-import play.twirl.api.Content;
-import play.twirl.api.Xml;
 import scala.jdk.javaapi.OptionConverters;
 
 /** An HTTP entity */
@@ -57,26 +55,6 @@ public abstract class HttpEntity {
   /** No entity. */
   public static final HttpEntity NO_ENTITY =
       new Strict(ByteString.emptyByteString(), Optional.empty());
-
-  /**
-   * Create an entity from the given content.
-   *
-   * @param content The content.
-   * @param charset The charset.
-   * @return the HTTP entity.
-   */
-  public static final HttpEntity fromContent(Content content, String charset) {
-    String body;
-    if (content instanceof Xml) {
-      // See https://github.com/playframework/playframework/issues/2770
-      body = content.body().trim();
-    } else {
-      body = content.body();
-    }
-    return new Strict(
-        ByteString.fromString(body, charset),
-        Optional.of(content.contentType() + "; charset=" + charset));
-  }
 
   /**
    * Create an entity from the given String.
