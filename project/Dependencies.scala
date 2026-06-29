@@ -11,8 +11,6 @@ object Dependencies {
   val akkaVersion: String = sys.props.getOrElse("akka.version", "2.6.21")
   val akkaHttpVersion = sys.props.getOrElse("akka.http.version", "10.2.10")
 
-  val sbt2TwirlVersion = "2.1.0-M9"
-
   val logback = "ch.qos.logback" % "logback-classic" % "1.5.35"
 
   val specs2Version = "4.20.0"
@@ -105,15 +103,10 @@ object Dependencies {
     )
   }
 
-  def sbtDependencies(sbtVersion: String, scalaVersion: String) = {
-    def sbtDep(moduleId: ModuleID) = sbtPluginDep(moduleId, sbtVersion, scalaVersion)
-
+  val sbtDependencies =
     Seq(
-      typesafeConfig,
       slf4jSimple,
-      sbtDep("org.playframework.twirl" % "sbt-twirl" % sbt2TwirlVersion),
       logback % Test
     ) ++ specs2CoreDeps.map(_ % Test)
-  }
 
 }
