@@ -85,7 +85,7 @@ lazy val PlayConfiguration = Project("Play-Configuration", file("core/play-confi
 lazy val SbtRoutesCompilerProject = PlaySbtProject("Sbt-Routes-Compiler", "dev-mode/routes-compiler")
   .enablePlugins(SbtTwirl)
   .settings(
-    libraryDependencies ++= routesCompilerDependencies(scalaVersion.value),
+    libraryDependencies ++= routesCompilerDependencies,
     TwirlKeys.templateFormats := Map("twirl" -> "play.routes.compiler.ScalaFormat")
   )
 

@@ -39,8 +39,7 @@ object Dependencies {
   val mockitoAll = "org.mockito" % "mockito-core" % "4.11.0"
   val javaxInject = "javax.inject" % "javax.inject" % "1"
 
-  def scalaParserCombinators(scalaVersion: String) =
-    Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0")
+  val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
 
   val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
 
@@ -57,8 +56,9 @@ object Dependencies {
         playJson,
         guava,
         javaxInject,
-        scalaXml
-      ) ++ scalaParserCombinators(scalaVersion) ++ specs2Deps.map(_ % Test)
+        scalaXml,
+        scalaParserCombinators
+      ) ++ specs2Deps.map(_ % Test)
 
   val nettyVersion = "4.2.2.Final"
 
@@ -89,11 +89,9 @@ object Dependencies {
 
   // ----- Development-mode tooling (routes compiler + sbt-2 plugin) -----
 
-  def routesCompilerDependencies(scalaVersion: String) = {
-    specs2CoreDeps.map(_ % Test) ++ Seq(specsMatcherExtra % Test) ++ scalaParserCombinators(
-      scalaVersion
-    ) ++ (logback % Test :: Nil)
-  }
+  val routesCompilerDependencies =
+    Seq(scalaParserCombinators, logback % Test) ++
+      specs2CoreDeps.map(_ % Test) ++ Seq(specsMatcherExtra % Test)
 
   private def sbtPluginDep(moduleId: ModuleID, sbtVersion: String, scalaVersion: String) = {
     Defaults.sbtPluginExtra(
