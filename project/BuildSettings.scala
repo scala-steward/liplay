@@ -17,7 +17,7 @@ object BuildSettings {
 
   /** These settings are used by all projects. */
   def playCommonSettings: Seq[Setting[?]] = Def.settings(
-    organization := "com.typesafe.play",
+    organization := "com.github.lichess-org.liplay",
     scalaVersion := scala3,
     (Compile / doc / scalacOptions) := Seq("-no-java-comments"),
     (Test / fork) := true,
@@ -28,7 +28,7 @@ object BuildSettings {
       Tests.Argument(TestFrameworks.Specs2, "showtimes"),
       Tests.Argument(TestFrameworks.JUnit, "-v")
     ),
-    version := "2.8.18-lila_3.23"
+    version := "3.0.0-RC1"
   )
 
   def playScriptedSettings: Seq[Setting[?]] = Seq(
