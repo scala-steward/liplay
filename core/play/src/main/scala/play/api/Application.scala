@@ -284,8 +284,6 @@ trait BuiltInComponents extends AkkaComponents with AkkaTypedComponents:
 
   lazy val cookieSigner: CookieSigner = new CookieSignerProvider(httpConfiguration.secret).get
 
-  lazy val csrfTokenSigner: CSRFTokenSigner = new CSRFTokenSignerProvider(cookieSigner).get
-
   lazy val tempFileReaper: TemporaryFileReaper =
     new DefaultTemporaryFileReaper(
       actorSystem,
