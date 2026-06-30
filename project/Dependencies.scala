@@ -5,13 +5,9 @@
 import sbt._
 import Keys._
 
-import buildinfo.BuildInfo
-
 object Dependencies {
   val akkaVersion: String = sys.props.getOrElse("akka.version", "2.6.21")
   val akkaHttpVersion = sys.props.getOrElse("akka.http.version", "10.2.10")
-
-  val sbt2TwirlVersion = "2.1.0-M9"
 
   val logback = "ch.qos.logback" % "logback-classic" % "1.5.35"
 
@@ -41,8 +37,9 @@ object Dependencies {
   val mockitoAll = "org.mockito" % "mockito-core" % "4.11.0"
   val javaxInject = "javax.inject" % "javax.inject" % "1"
 
-  def scalaParserCombinators(scalaVersion: String) =
-    Seq("org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0")
+  val scalaParserCombinators = "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
+
+  val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "2.4.0"
 
   val junitInterface = "com.github.sbt" % "junit-interface" % "0.13.3"
   val junit = "junit" % "junit" % "4.13.2"
@@ -56,8 +53,10 @@ object Dependencies {
       Seq(
         playJson,
         guava,
-        javaxInject
-      ) ++ scalaParserCombinators(scalaVersion) ++ specs2Deps.map(_ % Test)
+        javaxInject,
+        scalaXml,
+        scalaParserCombinators
+      ) ++ specs2Deps.map(_ % Test)
 
   val nettyVersion = "4.2.2.Final"
 
@@ -88,11 +87,9 @@ object Dependencies {
 
   // ----- Development-mode tooling (routes compiler + sbt-2 plugin) -----
 
-  def routesCompilerDependencies(scalaVersion: String) = {
-    specs2CoreDeps.map(_ % Test) ++ Seq(specsMatcherExtra % Test) ++ scalaParserCombinators(
-      scalaVersion
-    ) ++ (logback % Test :: Nil)
-  }
+  val routesCompilerDependencies =
+    Seq(scalaParserCombinators, logback % Test) ++
+      specs2CoreDeps.map(_ % Test) ++ Seq(specsMatcherExtra % Test)
 
   private def sbtPluginDep(moduleId: ModuleID, sbtVersion: String, scalaVersion: String) = {
     Defaults.sbtPluginExtra(
@@ -102,15 +99,10 @@ object Dependencies {
     )
   }
 
-  def sbtDependencies(sbtVersion: String, scalaVersion: String) = {
-    def sbtDep(moduleId: ModuleID) = sbtPluginDep(moduleId, sbtVersion, scalaVersion)
-
+  val sbtDependencies =
     Seq(
-      typesafeConfig,
       slf4jSimple,
-      sbtDep("org.playframework.twirl" % "sbt-twirl" % sbt2TwirlVersion),
       logback % Test
     ) ++ specs2CoreDeps.map(_ % Test)
-  }
 
 }

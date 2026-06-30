@@ -7,7 +7,6 @@ package play.api.http
 import akka.util.ByteString
 import play.api.mvc.*
 import play.api.libs.json.*
-import play.twirl.api.*
 
 import scala.annotation.*
 
@@ -33,34 +32,10 @@ object ContentTypeOf extends DefaultContentTypeOfs
 trait DefaultContentTypeOfs:
 
   /**
-   * Default content type for `Html` values (`text/html`).
-   */
-  implicit def contentTypeOf_Html(using codec: Codec): ContentTypeOf[Html] =
-    ContentTypeOf[Html](Some(ContentTypes.HTML))
-
-  /**
-   * Default content type for `Xml` values (`application/xml`).
-   */
-  implicit def contentTypeOf_Xml(using codec: Codec): ContentTypeOf[Xml] =
-    ContentTypeOf[Xml](Some(ContentTypes.XML))
-
-  /**
    * Default content type for `JsValue` values (`application/json`).
    */
   implicit def contentTypeOf_JsValue(using codec: Codec): ContentTypeOf[JsValue] =
     ContentTypeOf[JsValue](Some(ContentTypes.JSON))
-
-  /**
-   * Default content type for `Txt` values (`text/plain`).
-   */
-  implicit def contentTypeOf_Txt(using codec: Codec): ContentTypeOf[Txt] =
-    ContentTypeOf[Txt](Some(ContentTypes.TEXT))
-
-  /**
-   * Default content type for `JavaScript` values.
-   */
-  implicit def contentTypeOf_JavaScript(using codec: Codec): ContentTypeOf[JavaScript] =
-    ContentTypeOf[JavaScript](Some(ContentTypes.JAVASCRIPT))
 
   /**
    * Default content type for `String` values (`text/plain`).

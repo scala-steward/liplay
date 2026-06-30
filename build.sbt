@@ -31,7 +31,6 @@ lazy val PlayExceptionsProject = Project("Play-Exceptions", file("core/play-exce
   )
 
 lazy val PlayProject = Project("Play", file("core/play"))
-  .enablePlugins(SbtTwirl)
   .settings(playCommonSettings)
   .settings(
     libraryDependencies ++= runtime(
@@ -86,14 +85,14 @@ lazy val PlayConfiguration = Project("Play-Configuration", file("core/play-confi
 lazy val SbtRoutesCompilerProject = PlaySbtProject("Sbt-Routes-Compiler", "dev-mode/routes-compiler")
   .enablePlugins(SbtTwirl)
   .settings(
-    libraryDependencies ++= routesCompilerDependencies(scalaVersion.value),
+    libraryDependencies ++= routesCompilerDependencies,
     TwirlKeys.templateFormats := Map("twirl" -> "play.routes.compiler.ScalaFormat")
   )
 
 lazy val SbtPluginProject = PlaySbtPluginProject("Sbt-Plugin", "dev-mode/sbt-plugin")
   .enablePlugins(SbtPlugin)
   .settings(
-    libraryDependencies ++= sbtDependencies((pluginCrossBuild / sbtVersion).value, scalaVersion.value),
+    libraryDependencies ++= sbtDependencies,
     (Compile / sourceGenerators) += Def.task {
       PlayVersion(
         version.value,
