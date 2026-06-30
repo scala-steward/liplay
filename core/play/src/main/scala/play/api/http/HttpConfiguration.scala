@@ -315,13 +315,6 @@ object HttpConfiguration:
     SecretConfiguration(String.valueOf(secret), provider)
 
   /**
-   * Don't use this - only exists for transition from global state
-   */
-  private[play] def current: HttpConfiguration = Play.privateMaybeApplication match
-    case Success(app) => httpConfigurationCache(app)
-    case Failure(_) => HttpConfiguration()
-
-  /**
    * For calling from Java.
    */
   def createWithDefaults() = apply()

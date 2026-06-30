@@ -314,35 +314,3 @@ class NettyServer(
  */
 object NettyServer:
   private val logger = Logger(this.getClass)
-
-/**
- * Cake for building a simple Netty server.
- */
-trait NettyServerComponents extends ServerComponents:
-  lazy val server: NettyServer =
-    // Start the application first
-    Play.start(application)
-    new NettyServer(serverConfig, application, serverStopHook, application.actorSystem)(using
-      application.materializer
-    )
-
-  def application: Application
-
-/**
- * A convenient helper trait for constructing an NettyServer, for example:
- *
- * {{{
- *   val components = new DefaultNettyServerComponents {
- *     override lazy val router = {
- *       case GET(p"/") => Action(parse.json) { body =>
- *         Ok("Hello")
- *       }
- *     }
- *   }
- *   val server = components.server
- * }}}
- */
-trait DefaultNettyServerComponents
-    extends NettyServerComponents
-    with BuiltInComponents
-    with NoHttpFiltersComponents
