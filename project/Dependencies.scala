@@ -74,7 +74,7 @@ object Dependencies {
 
   val jimfs = "com.google.jimfs" % "jimfs" % "1.2"
 
-  val typesafeConfig = "com.typesafe" % "config" % "1.4.2"
+  val typesafeConfig = "com.typesafe" % "config" % "1.4.9"
 
   val streamsDependencies = Seq(
     "org.reactivestreams" % "reactive-streams" % "1.0.4",
