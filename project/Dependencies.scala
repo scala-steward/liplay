@@ -10,9 +10,9 @@ object Dependencies {
   val akkaVersion: String = sys.props.getOrElse("akka.version", "2.6.21")
   val akkaHttpVersion = sys.props.getOrElse("akka.http.version", "10.2.10")
 
-  val logback = "ch.qos.logback" % "logback-classic" % "1.5.35"
+  val logback = "ch.qos.logback" % "logback-classic" % "1.5.37"
 
-  val specs2Version = "4.20.0"
+  val specs2Version = "4.20.9"
   val specs2CoreDeps = Seq(
     "specs2-core",
     "specs2-junit"
@@ -23,10 +23,10 @@ object Dependencies {
 
   val scalacheckDependencies = Seq(
     "org.specs2" %% "specs2-scalacheck" % specs2Version % Test,
-    "org.scalacheck" %% "scalacheck" % "1.17.0" % Test
+    "org.scalacheck" %% "scalacheck" % "1.17.1" % Test
   )
 
-  val playJson = "org.playframework" %% "play-json" % "3.0.4"
+  val playJson = "org.playframework" %% "play-json" % "3.0.6"
 
   val slf4jVersion = "2.0.18"
   val slf4j = Seq("slf4j-api", "jul-to-slf4j", "jcl-over-slf4j").map("org.slf4j" % _ % slf4jVersion)
@@ -62,7 +62,7 @@ object Dependencies {
   val nettyVersion = "4.2.15.Final"
 
   val netty = Seq(
-    "com.typesafe.netty" % "netty-reactive-streams-http" % "2.0.14",
+    "com.typesafe.netty" % "netty-reactive-streams-http" % "2.0.19",
     ("io.netty" % "netty-transport-native-epoll" % nettyVersion).classifier("linux-x86_64")
   ) ++ specs2Deps.map(_ % Test)
 
@@ -74,7 +74,7 @@ object Dependencies {
 
   val jimfs = "com.google.jimfs" % "jimfs" % "1.3.1"
 
-  val typesafeConfig = "com.typesafe" % "config" % "1.4.2"
+  val typesafeConfig = "com.typesafe" % "config" % "1.4.9"
 
   val streamsDependencies = Seq(
     "org.reactivestreams" % "reactive-streams" % "1.0.4",
