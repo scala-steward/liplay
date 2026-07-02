@@ -12,8 +12,6 @@ import javax.inject.Inject
 import play.api.MarkerContexts.SecurityMarkerContext
 import play.api.*
 import play.api.http.*
-import play.api.inject.SimpleModule
-import play.api.inject.bind
 import play.api.libs.crypto.CookieSigner
 import play.api.libs.crypto.CookieSignerProvider
 import play.api.mvc.Cookie.SameSite
@@ -532,13 +530,3 @@ trait UrlEncodedCookieDataCodec extends CookieDataCodec:
       case NonFatal(e) =>
         logger.warn("Could not decode cookie", e)(using SecurityMarkerContext)
         Map.empty[String, String]
-
-/**
- * A cookie module that uses the urlencoded cookie encoding.
- */
-class LegacyCookiesModule
-    extends SimpleModule(
-      bind[CookieSigner].toProvider[CookieSignerProvider],
-      bind[SessionCookieBaker].to[LegacySessionCookieBaker],
-      bind[FlashCookieBaker].to[LegacyFlashCookieBaker]
-    )
