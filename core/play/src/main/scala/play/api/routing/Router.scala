@@ -21,24 +21,6 @@ trait Router:
   def routes: Router.Routes
 
   /**
-   * Get a new router that routes requests to `s"$prefix/$path"` in the same way this router routes requests
-   * to `path`.
-   *
-   * @return
-   *   the prefixed router
-   */
-  def withPrefix(prefix: String): Router
-
-  /**
-   * An alternative syntax for `withPrefix`. For example:
-   *
-   * {{{
-   *   val router = "/bar" /: barRouter
-   * }}}
-   */
-  final def /:(prefix: String): Router = withPrefix(prefix)
-
-  /**
    * A lifted version of the routes partial function.
    */
   final def handlerFor(request: RequestHeader): Option[Handler] = routes.lift(request)
@@ -48,7 +30,6 @@ trait Router:
    * `router`
    */
   final def orElse(other: Router): Router = new Router:
-    def withPrefix(prefix: String): Router = self.withPrefix(prefix).orElse(other.withPrefix(prefix))
     def routes: Routes = self.routes.orElse(other.routes)
 
 /**
