@@ -53,9 +53,6 @@ final class Routes(
   Feed_14: controllers.Feed,
 ) extends GeneratedRouter {
 
-  final val prefix: String = "/"
-  def withPrefix(addPrefix: String): Routes = ???
-
 
 
   // @LINE:95
