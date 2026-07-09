@@ -13,7 +13,7 @@ import scala.util.control.NonFatal
 object BuildSettings {
 
   val scala3 = "3.8.4"
-  val sbt2 = "2.0.0"
+  val sbt2 = "2.0.1"
 
   /** These settings are used by all projects. */
   def playCommonSettings: Seq[Setting[?]] = Def.settings(
