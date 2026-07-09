@@ -19,7 +19,7 @@ class RoutesFileParserSpec extends Specification:
     def parseRule(line: String): Rule =
       val result = RoutesFileParser.parseContent(line, new File("routes"))
       result must beRight[Any]
-      val Right(rules) = result
+      val rules = result.toOption.get
       rules.length must_== 1
       rules.head
 

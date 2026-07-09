@@ -329,7 +329,7 @@ package object templates:
               p.name
             ) + """", """ + safeKeyword(localNames.getOrElse(p.name, p.name)) + """)""") -> p
           }
-          .map {
+          .collect {
             case (u, Parameter(name, typeName, None, Some(default))) =>
               """if(""" + safeKeyword(
                 localNames.getOrElse(name, name)
