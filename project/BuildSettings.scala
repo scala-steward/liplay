@@ -28,7 +28,7 @@ object BuildSettings {
       Tests.Argument(TestFrameworks.Specs2, "showtimes"),
       Tests.Argument(TestFrameworks.JUnit, "-v")
     ),
-    version := "3.1.0"
+    version := "3.1.1"
   )
 
   def playScriptedSettings: Seq[Setting[?]] = Seq(
