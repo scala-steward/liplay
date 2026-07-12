@@ -127,6 +127,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers:
   override def skipWhitespace = false
   override val whiteSpace = """[ \t]+""".r
 
+  case class ModifiersWithComment(modifiers: List[Modifier], comment: Option[Comment])
+
   def EOF: util.matching.Regex = "\\z".r
 
   def namedError[A](p: Parser[A], msg: String): Parser[A] = Parser[A] { i =>
@@ -169,8 +171,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers:
       Modifier.apply
     ))
 
-  def modifiersWithComment: Parser[(List[Modifier], Option[Comment])] = modifiers ~ opt(comment) ^^ {
-    case m ~ c => (m, c)
+  def modifiersWithComment: Parser[ModifiersWithComment] = modifiers ~ opt(comment) ^^ { case m ~ c =>
+    ModifiersWithComment(m, c)
   }
 
   def newLine: Parser[String] = namedError(("\r" ?) ~> "\n", "End of line expected")
@@ -325,7 +327,7 @@ private[routes] class RoutesFileParser extends JavaTokenParsers:
         case (s, c @ ()) => (None, Nil, Nil) :: s
         case ((r, comments, modifiers) :: others, c: Comment) =>
           (r, c :: comments, modifiers) :: others
-        case ((r, comments, modifiers) :: others, (ms: List[Modifier], c: Option[Comment])) =>
+        case ((r, comments, modifiers) :: others, ModifiersWithComment(ms, c)) =>
           (r, c.toList ::: comments, ms ::: modifiers) :: others
         case (s, _) => s
       }
