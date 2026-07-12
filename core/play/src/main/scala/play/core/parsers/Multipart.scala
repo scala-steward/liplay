@@ -141,19 +141,11 @@ object Multipart:
               Right(
                 MultipartFormData(
                   parts
-                    .collect { case dp: DataPart =>
-                      dp
-                    }
+                    .collect { case dp: DataPart => dp }
                     .groupBy(_.key)
-                    .map { case (key, partValues) =>
-                      key -> partValues.map(_.value)
-                    },
-                  parts.collect { case fp: FilePart[A] =>
-                    fp
-                  },
-                  parts.collect { case bad: BadPart =>
-                    bad
-                  }
+                    .map { case (key, partValues) => key -> partValues.map(_.value) },
+                  parts.collect { case fp: FilePart[?] => fp.asInstanceOf[FilePart[A]] },
+                  parts.collect { case bad: BadPart => bad }
                 )
               )
             )
