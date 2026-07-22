@@ -12,15 +12,17 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.util.Failure
 
-import akka.stream.Materializer
-import akka.stream.scaladsl.*
-import akka.stream.Attributes
-import akka.stream.FlowShape
-import akka.stream.Inlet
-import akka.stream.IOResult
-import akka.stream.Outlet
-import akka.stream.stage.*
-import akka.util.ByteString
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.scaladsl.*
+import org.apache.pekko.stream.ActorAttributes
+import org.apache.pekko.stream.Supervision
+import org.apache.pekko.stream.Attributes
+import org.apache.pekko.stream.FlowShape
+import org.apache.pekko.stream.Inlet
+import org.apache.pekko.stream.IOResult
+import org.apache.pekko.stream.Outlet
+import org.apache.pekko.stream.stage.*
+import org.apache.pekko.util.ByteString
 
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.Files.TemporaryFileCreator
@@ -72,7 +74,7 @@ object Multipart:
           .via(new BodyPartParser(boundary, maxMemoryBufferSize, maxHeaderBuffer, allowEmptyFiles))
           .splitWhen(_.isLeft)
           .prefixAndTail(1)
-          .collect {
+          .map {
             case (Seq(Left(part: FilePart[?])), body) =>
               part.copy[Source[ByteString, ?]](
                 ref = body.collect { case Right(bytes) =>
@@ -82,12 +84,13 @@ object Multipart:
                   byteSource => Some(Await.result(byteSource.runFold(ByteString.empty)(_ ++ _), Duration.Inf))
               )
             case (Seq(Left(other)), ignored) =>
-              // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
+              // If we don't run the source, it takes Pekko streams 5 seconds to wake up and realise the source is empty
               // before it progresses onto the next element
               ignored.runWith(Sink.cancelled)
               other.asInstanceOf[Part[Nothing]]
           }
           .concatSubstreams
+          .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
 
         partHandler.through(multipartFlow)
       }
